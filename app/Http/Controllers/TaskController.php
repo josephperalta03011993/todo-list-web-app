@@ -16,7 +16,9 @@ class TaskController extends Controller
     use AuthorizesRequests;
     public function index()
     {
-        $tasks = Task::where('user_id', Auth::id())->get();
+        $tasks = Task::where('user_id', Auth::id())
+                        ->orderBy('due_date', 'ASC')
+                        ->get();
         return view('tasks.index', compact('tasks'));
     }
 
