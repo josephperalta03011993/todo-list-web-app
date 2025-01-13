@@ -63,4 +63,11 @@ class TaskPolicy
     {
         return false;
     }
+
+    public function deleteAnyCompleted(User $user): Response
+    {
+        return $user->tasks->contains('completed', true)
+            ? Response::allow()
+            : Response::deny('You do not have any completed tasks to delete.');
+    }
 }

@@ -1,17 +1,36 @@
 @extends('layouts.app')
 
 @section('content')
+
+@if (session('success'))
+    <div class="bg-green-500 text-white p-4 mb-4">
+        {{ session('success') }}
+    </div>
+@else
+    @if (session('error'))
+        <div class="bg-red-500 text-white p-4 mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
+@endif
+
 <div class="max-w-6xl mx-auto">
     <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-bold">Your Tasks</h2>
-        <a href="{{ route('tasks.create') }}"
-           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
-           Create Task
-        </a>
+        <h2 class="text-2xl font-bold">Your Goals</h2>
+        <div class="flex flex-row gap-2">
+            <a href="{{ route('tasks.create') }}"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Create Task
+            </a>
+            <form action="{{ route('tasks.deleteCompleted') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete all completed tasks?');">
+                @csrf
+                <button type="submit" class="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-700" aria-label="Delete all completed tasks">Delete All Completed</button>
+            </form>
+        </div>
     </div>
 
     @foreach ($tasks as $task)
-        <div class="flex items-center justify-between mb-3 p-4 bg-white rounded shadow">
+        <div class="flex items-center justify-between mb-3 p-4 bg-white rounded shadow hover:shadow-xl border-2 hover:border-green-500">
             <div>
                 <input type="checkbox"
                        id="task-{{ $task->id }}"

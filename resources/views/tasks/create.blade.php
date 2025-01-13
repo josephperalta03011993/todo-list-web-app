@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto">
-    <h2 class="text-2xl font-bold mb-4">Create a New Task</h2>
+    <h2 class="text-2xl font-bold mb-4">What's Your Next Goal?</h2>
     <form action="{{ route('tasks.store') }}" method="POST" class="bg-white p-6 rounded shadow">
         @csrf
         <div class="mb-4">

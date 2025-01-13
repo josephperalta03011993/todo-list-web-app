@@ -10,7 +10,10 @@
     <div class="min-h-screen flex flex-col">
         <header class="bg-blue-600 text-white py-4 shadow">
             <div class="container mx-auto px-4 flex justify-between items-center">
-                <h1 class="text-2xl font-bold">Todo App</h1>
+                <div class="flex">
+                    <img src="{{ asset('/images/logo.png') }}" alt="logo" width="50" class="bg-white mr-2 rounded">
+                    <h1 class="text-2xl font-bold">Bizlist App</h1>
+                </div>
 
                 <!-- Logout Button -->
                 <form action="{{ route('logout') }}" method="POST">
@@ -25,7 +28,7 @@
             @yield('content')
         </main>
         <footer class="bg-gray-800 text-white text-center py-4 mt-6">
-            <p>&copy; {{ date('Y') }} Todo App. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} BizlyHub App. All rights reserved.</p>
         </footer>
     </div>
 </body>

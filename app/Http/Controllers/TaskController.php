@@ -7,6 +7,9 @@ use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Log;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
@@ -45,7 +48,7 @@ class TaskController extends Controller
 
         $task->update(['completed' => !$task->completed]);
 
-        return redirect()->route('tasks.index')->with('success', 'Task status updated successfully!');
+        return redirect()->route('tasks.index')->with('success', 'Task marked as completed!');
     }
 
     public function destroy(Task $task)
@@ -80,6 +83,49 @@ class TaskController extends Controller
 
     public function create()
     {
-        return view('tasks.create');
+        return view('tasks.create')->with('success', 'New task created successfully!');
+    }
+
+    public function deleteCompleted()
+    {
+        try {
+            $this->authorize('deleteAnyCompleted', Task::class);
+
+            // Check if there are any completed tasks
+            $completedTasksCount = Task::where('user_id', auth()->id())
+                ->where('completed', 1)
+                ->count();
+
+            if ($completedTasksCount === 0) {
+                return redirect()
+                    ->route('tasks.index')
+                    ->with('info', 'No completed tasks found to delete.');
+            }
+
+            DB::beginTransaction();
+            try {
+                $deleted = Task::where('user_id', auth()->id())
+                    ->where('completed', 1)
+                    ->delete();
+
+                DB::commit();
+
+                return redirect()
+                    ->route('tasks.index')
+                    ->with('success', "{$deleted} tasks were deleted successfully!");
+            } catch (Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
+        } catch (Exception $e) {
+            Log::error('Error deleting completed tasks: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'exception' => $e
+            ]);
+
+            return redirect()
+                ->route('tasks.index')
+                ->with('error', "An error occurred while deleting tasks. {$e->getMessage()}");
+        }
     }
 }
