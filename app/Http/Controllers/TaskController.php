@@ -19,7 +19,8 @@ class TaskController extends Controller
         $tasks = Task::where('user_id', Auth::id())
                         ->orderBy('due_date', 'ASC')
                         ->get();
-        return view('tasks.index', compact('tasks'));
+        $totalGoals = Task::where('user_id', Auth::id())->count();
+        return view('tasks.index', compact('tasks', 'totalGoals'));
     }
 
     public function store(Request $request)
